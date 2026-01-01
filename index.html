@@ -127,8 +127,15 @@ html, body {
   z-index: 10;
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 15px;
   padding-bottom: calc(40px + env(safe-area-inset-bottom));
+  overflow-x: hidden;
+}
+
+@media (max-width: 400px) {
+  .container {
+    padding: 10px;
+  }
 }
 
 /* Canvas Section */
@@ -180,9 +187,18 @@ html, body {
 .freq-section {
   background: rgba(18, 8, 42, 0.8);
   border: 1px solid rgba(107, 63, 160, 0.3);
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 20px;
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+@media (max-width: 400px) {
+  .freq-section {
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
 }
 
 .section-title {
@@ -366,20 +382,20 @@ html, body {
 .layers-section {
   background: rgba(18, 8, 42, 0.8);
   border: 1px solid rgba(107, 63, 160, 0.3);
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 20px;
+  border-radius: 16px;
+  padding: 15px;
+  margin-bottom: 15px;
 }
 
 .layer-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  gap: 8px;
 }
 
 .layer-btn {
-  padding: 12px 8px;
-  border-radius: 12px;
+  padding: 10px 6px;
+  border-radius: 10px;
   border: 1px solid rgba(107, 63, 160, 0.4);
   background: rgba(10, 5, 32, 0.6);
   color: var(--muted);
@@ -521,34 +537,38 @@ html, body {
 /* Action Buttons */
 .action-row {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   justify-content: center;
-  margin-bottom: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  padding: 0 10px;
 }
 
 .action-btn {
-  padding: 14px 24px;
-  border-radius: 25px;
+  padding: 10px 14px;
+  border-radius: 20px;
   border: none;
   font-family: 'Quicksand', sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
+  min-width: 70px;
+  justify-content: center;
 }
 
 .action-btn.primary {
   background: linear-gradient(135deg, var(--purple), var(--magenta));
   color: white;
-  box-shadow: 0 4px 20px rgba(155, 77, 202, 0.4);
+  box-shadow: 0 4px 15px rgba(155, 77, 202, 0.4);
 }
 
 .action-btn.primary.playing {
   background: linear-gradient(135deg, var(--gold), var(--amber));
-  box-shadow: 0 4px 20px rgba(254, 202, 87, 0.4);
+  box-shadow: 0 4px 15px rgba(254, 202, 87, 0.4);
 }
 
 .action-btn.secondary {
@@ -558,7 +578,21 @@ html, body {
 }
 
 .action-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.95);
+}
+
+/* Responsive action buttons for very small screens */
+@media (max-width: 360px) {
+  .action-btn {
+    padding: 8px 10px;
+    font-size: 11px;
+    min-width: 60px;
+    gap: 3px;
+  }
+  
+  .action-row {
+    gap: 6px;
+  }
 }
 
 /* Info Section */
@@ -836,12 +870,12 @@ html, body {
 .nature-sounds-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 8px;
 }
 
 .nature-sound-item {
   display: flex;
-  gap: 6px;
+  gap: 4px;
   align-items: stretch;
 }
 
