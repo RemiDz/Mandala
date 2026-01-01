@@ -1,0 +1,3329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0514">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Sacred Mandala Generator ✧ Frequency Geometry</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #0a0514;
+  --deep: #12082a;
+  --purple: #6b3fa0;
+  --magenta: #9b4dca;
+  --pink: #e056fd;
+  --cyan: #00d2d3;
+  --gold: #feca57;
+  --amber: #ff9f43;
+  --white: #f8f0fc;
+  --muted: rgba(248, 240, 252, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--void);
+  font-family: 'Quicksand', sans-serif;
+  color: var(--white);
+  overflow-x: hidden;
+}
+
+/* Background */
+.bg-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(107, 63, 160, 0.3) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(224, 86, 253, 0.2) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 210, 211, 0.1) 0%, transparent 60%);
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding: 15px 20px;
+  padding-top: calc(15px + env(safe-area-inset-top));
+  background: linear-gradient(180deg, var(--void) 0%, rgba(10, 5, 20, 0.95) 100%);
+  border-bottom: 1px solid rgba(107, 63, 160, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  font-size: 24px;
+  animation: spin 20s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.logo-text {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  background: linear-gradient(135deg, var(--gold), var(--pink));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.audio-indicator {
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(107, 63, 160, 0.4);
+  background: rgba(10, 5, 32, 0.8);
+  color: var(--muted);
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.audio-indicator.playing {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(0, 210, 211, 0.15);
+}
+
+.audio-indicator.playing .audio-icon {
+  animation: audioPulse 1s ease-in-out infinite;
+}
+
+@keyframes audioPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Main Container */
+.container {
+  position: relative;
+  z-index: 10;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  padding-bottom: calc(40px + env(safe-area-inset-bottom));
+}
+
+/* Canvas Section */
+.canvas-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  max-width: 90vw;
+  max-height: 90vw;
+}
+
+.glow-ring {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  border: 2px solid rgba(107, 63, 160, 0.4);
+  box-shadow: 
+    0 0 30px rgba(155, 77, 202, 0.3),
+    0 0 60px rgba(224, 86, 253, 0.15),
+    inset 0 0 30px rgba(107, 63, 160, 0.1);
+  animation: glowPulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+#mandalaCanvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(18, 8, 42, 0.95), var(--void));
+  cursor: crosshair;
+}
+
+/* Frequency Controls */
+.freq-section {
+  background: rgba(18, 8, 42, 0.8);
+  border: 1px solid rgba(107, 63, 160, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+}
+
+.freq-controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center;
+}
+
+.freq-wheel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.freq-label {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.wheel-visual {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wheel-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  background: linear-gradient(var(--deep), var(--deep)) padding-box,
+              conic-gradient(from 0deg, var(--purple), var(--pink), var(--cyan), var(--gold), var(--purple)) border-box;
+  animation: wheelSpin 8s linear infinite;
+}
+
+.wheel-ring.reverse {
+  animation-direction: reverse;
+}
+
+@keyframes wheelSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.wheel-core {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--purple), var(--deep));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.freq-value {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--white);
+  min-width: 35px;
+  text-align: center;
+}
+
+.freq-unit {
+  font-size: 8px;
+  color: var(--muted);
+}
+
+.freq-slider {
+  width: 80px;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(90deg, var(--deep), var(--purple));
+  border-radius: 3px;
+  outline: none;
+}
+
+.freq-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--cyan);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+.freq-slider.right::-webkit-slider-thumb {
+  background: var(--pink);
+  box-shadow: 0 0 10px var(--pink);
+}
+
+/* Ratio Display */
+.ratio-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 15px;
+  background: rgba(10, 5, 20, 0.6);
+  border-radius: 12px;
+  border: 1px solid rgba(107, 63, 160, 0.2);
+  min-width: 90px;
+  flex-shrink: 0;
+}
+
+.ratio-label {
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ratio-value {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 4px 0;
+  min-width: 60px;
+  text-align: center;
+}
+
+.ratio-name {
+  font-size: 10px;
+  color: var(--cyan);
+  font-style: italic;
+  white-space: nowrap;
+}
+
+/* Preset Chips */
+.presets-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.preset-chip {
+  padding: 8px 14px;
+  border-radius: 15px;
+  border: 1px solid rgba(0, 210, 211, 0.3);
+  background: rgba(0, 210, 211, 0.1);
+  color: var(--cyan);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preset-chip:active {
+  transform: scale(0.95);
+  background: rgba(0, 210, 211, 0.3);
+}
+
+/* Layers Section */
+.layers-section {
+  background: rgba(18, 8, 42, 0.8);
+  border: 1px solid rgba(107, 63, 160, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.layer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.layer-btn {
+  padding: 12px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(107, 63, 160, 0.4);
+  background: rgba(10, 5, 32, 0.6);
+  color: var(--muted);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.layer-btn.active {
+  background: linear-gradient(135deg, rgba(107, 63, 160, 0.5), rgba(155, 77, 202, 0.4));
+  border-color: var(--magenta);
+  color: var(--white);
+  box-shadow: 0 0 15px rgba(155, 77, 202, 0.3);
+}
+
+.layer-btn:active {
+  transform: scale(0.95);
+}
+
+.layer-icon {
+  font-size: 20px;
+}
+
+/* Animation Section */
+.anim-section {
+  background: rgba(18, 8, 42, 0.8);
+  border: 1px solid rgba(107, 63, 160, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.anim-modes {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.anim-btn {
+  flex: 1;
+  max-width: 75px;
+  padding: 10px 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(107, 63, 160, 0.4);
+  background: rgba(10, 5, 32, 0.6);
+  color: var(--muted);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+
+.anim-btn.active {
+  background: linear-gradient(135deg, rgba(254, 202, 87, 0.3), rgba(255, 159, 67, 0.2));
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.anim-btn span:first-child {
+  font-size: 16px;
+}
+
+.speed-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.speed-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.speed-slider {
+  width: 150px;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(90deg, var(--deep), var(--magenta));
+  border-radius: 3px;
+  outline: none;
+}
+
+.speed-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--gold), var(--amber));
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 12px var(--gold);
+}
+
+/* Palette Section */
+.palette-section {
+  background: rgba(18, 8, 42, 0.8);
+  border: 1px solid rgba(107, 63, 160, 0.3);
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.palette-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.palette-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.palette-btn.active {
+  border-color: var(--white);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(248, 240, 252, 0.4);
+}
+
+.palette-btn:active {
+  transform: scale(0.95);
+}
+
+/* Action Buttons */
+.action-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.action-btn {
+  padding: 14px 24px;
+  border-radius: 25px;
+  border: none;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn.primary {
+  background: linear-gradient(135deg, var(--purple), var(--magenta));
+  color: white;
+  box-shadow: 0 4px 20px rgba(155, 77, 202, 0.4);
+}
+
+.action-btn.primary.playing {
+  background: linear-gradient(135deg, var(--gold), var(--amber));
+  box-shadow: 0 4px 20px rgba(254, 202, 87, 0.4);
+}
+
+.action-btn.secondary {
+  background: rgba(10, 5, 32, 0.8);
+  border: 1px solid rgba(107, 63, 160, 0.4);
+  color: var(--white);
+}
+
+.action-btn:active {
+  transform: scale(0.97);
+}
+
+/* Info Section */
+.info-section {
+  background: rgba(18, 8, 42, 0.6);
+  border: 1px solid rgba(254, 202, 87, 0.2);
+  border-radius: 16px;
+  padding: 15px;
+  text-align: center;
+}
+
+.info-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.info-text {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Touch Ripple Effects */
+.touch-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(254, 202, 87, 0.6), rgba(224, 86, 253, 0.3), transparent);
+  pointer-events: none;
+  animation: rippleExpand 1.2s ease-out forwards;
+  z-index: 1000;
+}
+
+@keyframes rippleExpand {
+  0% {
+    width: 10px;
+    height: 10px;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0);
+  }
+  100% {
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* Touch Particles */
+.touch-particle {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+  animation: particleFade 1.5s ease-out forwards;
+}
+
+@keyframes particleFade {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) translateY(-50px);
+  }
+}
+
+/* Gesture Hint */
+.gesture-hint {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(10, 5, 32, 0.95);
+  border: 1px solid var(--gold);
+  border-radius: 20px;
+  padding: 20px 30px;
+  color: var(--gold);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 14px;
+  z-index: 2000;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  box-shadow: 0 0 40px rgba(254, 202, 87, 0.3);
+}
+
+.gesture-hint.visible {
+  opacity: 1;
+}
+
+.gesture-hint .icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+/* Gyro Indicator */
+.gyro-indicator {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  padding: 8px 12px;
+  border-radius: 15px;
+  background: rgba(10, 5, 32, 0.9);
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  font-size: 11px;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  gap: 6px;
+  animation: fadeIn 0.5s ease;
+}
+
+.gyro-indicator.active {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Full Screen Mode */
+.fullscreen-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--magenta));
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 500;
+  box-shadow: 0 4px 20px rgba(155, 77, 202, 0.5);
+  transition: transform 0.3s ease;
+}
+
+.fullscreen-btn:active {
+  transform: scale(0.9);
+}
+
+/* Zen Mode Overlay */
+.zen-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--void);
+  z-index: 1500;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.zen-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.zen-canvas-wrapper {
+  width: 90vw;
+  height: 90vw;
+  max-width: 500px;
+  max-height: 500px;
+  position: relative;
+}
+
+.zen-exit {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-family: 'Quicksand', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* Breathing Guide */
+.breathing-guide {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  color: var(--muted);
+  font-size: 16px;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.breathing-guide.active {
+  opacity: 1;
+  animation: breathingText 8s ease-in-out infinite;
+}
+
+@keyframes breathingText {
+  0%, 100% { opacity: 0.3; transform: translateX(-50%) scale(0.95); }
+  25% { opacity: 1; transform: translateX(-50%) scale(1); }
+  50% { opacity: 0.3; transform: translateX(-50%) scale(0.95); }
+  75% { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+/* Touch Trail Canvas */
+#touchTrailCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 998;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#touchTrailCanvas.active {
+  opacity: 1;
+}
+
+/* Interactive Hint Tooltip */
+.hint-tooltip {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(10, 5, 32, 0.95);
+  border: 1px solid rgba(0, 210, 211, 0.4);
+  border-radius: 12px;
+  padding: 10px 18px;
+  color: var(--cyan);
+  font-size: 12px;
+  z-index: 300;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.hint-tooltip.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+/* Nature Sounds Grid */
+.nature-sounds-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.nature-sound-item {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+
+.nature-sound-item .layer-btn {
+  flex: 1;
+}
+
+.shuffle-btn {
+  width: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(107, 63, 160, 0.4);
+  background: rgba(10, 5, 32, 0.6);
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shuffle-btn:hover {
+  background: rgba(254, 202, 87, 0.2);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.shuffle-btn:active {
+  transform: scale(0.95);
+  background: rgba(254, 202, 87, 0.4);
+}
+
+@media (max-width: 400px) {
+  .nature-sounds-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .shuffle-btn {
+    width: 32px;
+    font-size: 12px;
+  }
+}
+
+/* Intensity Meter */
+.intensity-meter {
+  position: fixed;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 150px;
+  background: rgba(10, 5, 32, 0.8);
+  border-radius: 3px;
+  border: 1px solid rgba(107, 63, 160, 0.3);
+  overflow: hidden;
+  z-index: 200;
+  display: none;
+}
+
+.intensity-meter.active {
+  display: block;
+}
+
+.intensity-fill {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: linear-gradient(to top, var(--cyan), var(--pink), var(--gold));
+  border-radius: 3px;
+  transition: height 0.1s ease;
+}
+
+/* Responsive */
+@media (max-width: 400px) {
+  .freq-controls {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .freq-wheel {
+    width: 90px;
+  }
+  
+  .wheel-visual {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .wheel-core {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .freq-value {
+    font-size: 13px;
+  }
+  
+  .freq-slider {
+    width: 70px;
+  }
+  
+  .ratio-box {
+    order: -1;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 5px;
+  }
+  
+  .canvas-wrapper {
+    width: 280px;
+    height: 280px;
+  }
+  
+  .layer-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .anim-modes {
+    flex-wrap: wrap;
+  }
+  
+  .anim-btn {
+    min-width: 60px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+
+<!-- Touch Trail Canvas -->
+<canvas id="touchTrailCanvas"></canvas>
+
+<!-- Gyroscope Indicator -->
+<div class="gyro-indicator" id="gyroIndicator">
+  <span>🌀</span>
+  <span>Gyro Active</span>
+</div>
+
+<!-- Breathing Guide -->
+<div class="breathing-guide" id="breathingGuide">
+  ✧ Breathe In... Hold... Breathe Out... ✧
+</div>
+
+<!-- Intensity Meter -->
+<div class="intensity-meter" id="intensityMeter">
+  <div class="intensity-fill" id="intensityFill"></div>
+</div>
+
+<!-- Fullscreen Button -->
+<button class="fullscreen-btn" id="fullscreenBtn">⛶</button>
+
+<!-- Gesture Hint -->
+<div class="gesture-hint" id="gestureHint">
+  <span class="icon">👆</span>
+  <span class="text">Tap mandala to interact</span>
+</div>
+
+<!-- Hint Tooltip -->
+<div class="hint-tooltip" id="hintTooltip">Double-tap for Zen Mode</div>
+
+<!-- Zen Mode Overlay -->
+<div class="zen-overlay" id="zenOverlay">
+  <button class="zen-exit" id="zenExit">✕ Exit Zen</button>
+  <div class="zen-canvas-wrapper" id="zenCanvasWrapper"></div>
+</div>
+
+<header class="header">
+  <div class="logo">
+    <span class="logo-icon">🌀</span>
+    <span class="logo-text">SACRED MANDALA</span>
+  </div>
+  <div class="audio-indicator" id="audioIndicator">
+    <span class="audio-icon">🔇</span>
+    <span class="audio-text">Audio Off</span>
+  </div>
+</header>
+
+<div class="container">
+  
+  <!-- Canvas -->
+  <section class="canvas-section">
+    <div class="canvas-wrapper">
+      <div class="glow-ring"></div>
+      <canvas id="mandalaCanvas" width="320" height="320"></canvas>
+    </div>
+  </section>
+  
+  <!-- Frequency Controls -->
+  <section class="freq-section">
+    <div class="section-title">◈ FREQUENCY SYNTHESIS ◈</div>
+    
+    <div class="freq-controls">
+      <div class="freq-wheel">
+        <div class="freq-label">Left Frequency</div>
+        <div class="wheel-visual">
+          <div class="wheel-ring"></div>
+          <div class="wheel-core">
+            <span class="freq-value" id="freqLDisplay">432</span>
+            <span class="freq-unit">Hz</span>
+          </div>
+        </div>
+        <input type="range" id="freqL" class="freq-slider" min="20" max="999" value="432">
+      </div>
+      
+      <div class="ratio-box">
+        <div class="ratio-label">Ratio</div>
+        <div class="ratio-value" id="ratioDisplay">9:11</div>
+        <div class="ratio-name" id="intervalDisplay">Complex</div>
+      </div>
+      
+      <div class="freq-wheel">
+        <div class="freq-label">Right Frequency</div>
+        <div class="wheel-visual">
+          <div class="wheel-ring reverse"></div>
+          <div class="wheel-core">
+            <span class="freq-value" id="freqRDisplay">528</span>
+            <span class="freq-unit">Hz</span>
+          </div>
+        </div>
+        <input type="range" id="freqR" class="freq-slider right" min="20" max="999" value="528">
+      </div>
+    </div>
+    
+    <div class="presets-row">
+      <button class="preset-chip" data-left="432" data-right="432">Unison</button>
+      <button class="preset-chip" data-left="256" data-right="384">Fifth</button>
+      <button class="preset-chip" data-left="396" data-right="528">Love</button>
+      <button class="preset-chip" data-left="432" data-right="864">Octave</button>
+      <button class="preset-chip" data-left="528" data-right="639">Harmony</button>
+      <button class="preset-chip" data-left="111" data-right="777">Angel</button>
+      <button class="preset-chip" data-left="417" data-right="741">Awakening</button>
+    </div>
+  </section>
+  
+  <!-- Layers -->
+  <section class="layers-section">
+    <div class="section-title">◈ GEOMETRY LAYERS ◈</div>
+    
+    <div class="layer-grid">
+      <button class="layer-btn active" data-layer="petals">
+        <span class="layer-icon">❀</span>
+        <span>Petals</span>
+      </button>
+      <button class="layer-btn active" data-layer="circles">
+        <span class="layer-icon">◯</span>
+        <span>Circles</span>
+      </button>
+      <button class="layer-btn active" data-layer="spirals">
+        <span class="layer-icon">🌀</span>
+        <span>Spirals</span>
+      </button>
+      <button class="layer-btn" data-layer="triangles">
+        <span class="layer-icon">△</span>
+        <span>Triangles</span>
+      </button>
+      <button class="layer-btn" data-layer="hexagons">
+        <span class="layer-icon">⬡</span>
+        <span>Hexagons</span>
+      </button>
+      <button class="layer-btn" data-layer="stars">
+        <span class="layer-icon">✦</span>
+        <span>Stars</span>
+      </button>
+      <button class="layer-btn" data-layer="waves">
+        <span class="layer-icon">〰</span>
+        <span>Waves</span>
+      </button>
+      <button class="layer-btn" data-layer="dots">
+        <span class="layer-icon">•••</span>
+        <span>Dots</span>
+      </button>
+      <button class="layer-btn" data-layer="flower">
+        <span class="layer-icon">✿</span>
+        <span>Flower</span>
+      </button>
+    </div>
+  </section>
+  
+  <!-- Animation -->
+  <section class="anim-section">
+    <div class="section-title">◈ ANIMATION ◈</div>
+    
+    <div class="anim-modes">
+      <button class="anim-btn active" data-mode="rotate">
+        <span>↻</span>
+        <span>Rotate</span>
+      </button>
+      <button class="anim-btn" data-mode="pulse">
+        <span>◉</span>
+        <span>Pulse</span>
+      </button>
+      <button class="anim-btn" data-mode="morph">
+        <span>∞</span>
+        <span>Morph</span>
+      </button>
+      <button class="anim-btn" data-mode="bloom">
+        <span>✿</span>
+        <span>Bloom</span>
+      </button>
+      <button class="anim-btn" data-mode="breathe">
+        <span>◐</span>
+        <span>Breathe</span>
+      </button>
+    </div>
+    
+    <div class="speed-row">
+      <span class="speed-label">Speed</span>
+      <input type="range" id="speed" class="speed-slider" min="1" max="100" value="50">
+    </div>
+    
+    <div class="speed-row" style="margin-top: 12px;">
+      <span class="speed-label">🔊 Volume</span>
+      <input type="range" id="volume" class="speed-slider" min="0" max="100" value="50">
+    </div>
+  </section>
+  
+  <!-- Palette -->
+  <section class="palette-section">
+    <div class="section-title">◈ COLOR PALETTE ◈</div>
+    
+    <div class="palette-row">
+      <button class="palette-btn active" data-palette="cosmic" style="background: linear-gradient(135deg, #6b3fa0, #e056fd, #00d2d3)"></button>
+      <button class="palette-btn" data-palette="sunset" style="background: linear-gradient(135deg, #ff6b6b, #feca57, #ff9ff3)"></button>
+      <button class="palette-btn" data-palette="ocean" style="background: linear-gradient(135deg, #0abde3, #10ac84, #48dbfb)"></button>
+      <button class="palette-btn" data-palette="aurora" style="background: linear-gradient(135deg, #5f27cd, #1dd1a1, #a29bfe)"></button>
+      <button class="palette-btn" data-palette="fire" style="background: linear-gradient(135deg, #ee5a24, #f9ca24, #e74c3c)"></button>
+      <button class="palette-btn" data-palette="mono" style="background: linear-gradient(135deg, #dfe6e9, #636e72, #2d3436)"></button>
+      <button class="palette-btn" data-palette="neon" style="background: linear-gradient(135deg, #00ff87, #60efff, #ff00ff)"></button>
+    </div>
+  </section>
+  
+  <!-- Actions -->
+  <div class="action-row">
+    <button class="action-btn primary" id="playBtn">
+      <span>▶</span>
+      <span>Play</span>
+    </button>
+    <button class="action-btn secondary" id="bowlBtn" title="Play Singing Bowl">
+      <span>🔔</span>
+      <span>Bowl</span>
+    </button>
+    <button class="action-btn secondary" id="randomBtn">
+      <span>🎲</span>
+      <span>Random</span>
+    </button>
+    <button class="action-btn secondary" id="resetBtn">
+      <span>↺</span>
+      <span>Reset</span>
+    </button>
+  </div>
+  
+  <!-- Nature Sounds Toggle -->
+  <section class="freq-section">
+    <div class="section-title">◈ NATURE SOUNDS ◈</div>
+    <div class="nature-sounds-grid">
+      <div class="nature-sound-item">
+        <button class="layer-btn nature-btn" id="rainBtn" data-sound="rain">
+          <span class="layer-icon">🌧️</span>
+          <span>Rain</span>
+        </button>
+        <button class="shuffle-btn" data-shuffle="rain" title="Shuffle rain sound">🔀</button>
+      </div>
+      <div class="nature-sound-item">
+        <button class="layer-btn nature-btn" id="windBtn" data-sound="wind">
+          <span class="layer-icon">💨</span>
+          <span>Wind</span>
+        </button>
+        <button class="shuffle-btn" data-shuffle="wind" title="Shuffle wind sound">🔀</button>
+      </div>
+      <div class="nature-sound-item">
+        <button class="layer-btn nature-btn" id="birdsBtn" data-sound="birds">
+          <span class="layer-icon">🐦</span>
+          <span>Birds</span>
+        </button>
+        <button class="shuffle-btn" data-shuffle="birds" title="Shuffle bird sound">🔀</button>
+      </div>
+      <div class="nature-sound-item">
+        <button class="layer-btn nature-btn" id="oceanBtn" data-sound="ocean">
+          <span class="layer-icon">🌊</span>
+          <span>Ocean</span>
+        </button>
+        <button class="shuffle-btn" data-shuffle="ocean" title="Shuffle ocean sound">🔀</button>
+      </div>
+      <div class="nature-sound-item">
+        <button class="layer-btn nature-btn" id="fireBtn" data-sound="fire">
+          <span class="layer-icon">🔥</span>
+          <span>Fire</span>
+        </button>
+        <button class="shuffle-btn" data-shuffle="fire" title="Shuffle fire sound">🔀</button>
+      </div>
+      <div class="nature-sound-item">
+        <button class="layer-btn nature-btn" id="forestBtn" data-sound="forest">
+          <span class="layer-icon">🌲</span>
+          <span>Forest</span>
+        </button>
+        <button class="shuffle-btn" data-shuffle="forest" title="Shuffle forest sound">🔀</button>
+      </div>
+      <div class="nature-sound-item">
+        <button class="layer-btn nature-btn" id="natureBtn" data-sound="nature">
+          <span class="layer-icon">🌿</span>
+          <span>Nature</span>
+        </button>
+        <button class="shuffle-btn" data-shuffle="nature" title="Shuffle nature sound">🔀</button>
+      </div>
+    </div>
+    <p style="text-align: center; font-size: 11px; color: var(--muted); margin-top: 10px;">
+      Tap 🔀 to shuffle to a random track
+    </p>
+  </section>
+  
+  <!-- Meditation Timer -->
+  <section class="freq-section">
+    <div class="section-title">◈ MEDITATION TIMER ◈</div>
+    <div class="timer-row" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <button class="preset-chip timer-chip" data-minutes="5">5 min</button>
+      <button class="preset-chip timer-chip" data-minutes="10">10 min</button>
+      <button class="preset-chip timer-chip" data-minutes="15">15 min</button>
+      <button class="preset-chip timer-chip" data-minutes="20">20 min</button>
+      <button class="preset-chip timer-chip" data-minutes="30">30 min</button>
+    </div>
+    <div id="timerDisplay" style="text-align: center; margin-top: 15px; font-family: 'Cinzel', serif; font-size: 24px; color: var(--gold); display: none;">
+      <span id="timerValue">00:00</span>
+      <button id="timerCancel" style="margin-left: 15px; background: none; border: 1px solid var(--muted); color: var(--muted); padding: 5px 12px; border-radius: 10px; cursor: pointer; font-size: 11px;">Cancel</button>
+    </div>
+  </section>
+  
+  <!-- Interactive Hint -->
+  <section class="freq-section" style="background: linear-gradient(135deg, rgba(254, 202, 87, 0.1), rgba(224, 86, 253, 0.1));">
+    <div class="section-title">◈ TOUCH GESTURES ◈</div>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 12px; color: var(--muted);">
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">👆</div>
+        <div>Tap for ripple</div>
+      </div>
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">👆👆</div>
+        <div>Double-tap: Zen Mode</div>
+      </div>
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">👆⏳</div>
+        <div>Long press: Randomize</div>
+      </div>
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">🤏</div>
+        <div>Pinch: Adjust speed</div>
+      </div>
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">👈👉</div>
+        <div>Swipe H: Palette</div>
+      </div>
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">👆👇</div>
+        <div>Swipe V: Animation</div>
+      </div>
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">📱💫</div>
+        <div>Shake: Randomize</div>
+      </div>
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 24px; margin-bottom: 5px;">📱↔️</div>
+        <div>Tilt: Control flow</div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- Info -->
+  <section class="info-section">
+    <div class="info-title">✧ About Sacred Mandalas ✧</div>
+    <p class="info-text">
+      Immerse yourself in this meditative experience. The ambient soundscape creates gentle binaural beats
+      that synchronize with the mandala's breathing patterns. Touch and interact with the mandala to 
+      create a personal meditation journey. The frequencies harmonize to induce deep relaxation and 
+      altered states of consciousness. Use headphones for the full binaural effect.
+    </p>
+  </section>
+  
+</div>
+
+<script>
+// ==================== MANDALA ENGINE ====================
+class MandalaGenerator {
+  constructor() {
+    this.canvas = document.getElementById('mandalaCanvas');
+    this.ctx = this.canvas.getContext('2d');
+    this.hasRendered = false;
+    
+    // Ensure canvas is properly sized
+    this.initCanvas();
+    
+    // Audio
+    this.audioCtx = null;
+    this.leftOsc = null;
+    this.rightOsc = null;
+    this.leftGain = null;
+    this.rightGain = null;
+    this.masterGain = null;
+    this.audioPlaying = false;
+    
+    // State
+    this.freqL = 432;
+    this.freqR = 528;
+    this.baseFreq = 200; // Carrier frequency for binaural
+    this.isPlaying = false;
+    this.animMode = 'rotate';
+    this.speed = 50;
+    this.volume = 0.5;
+    this.palette = 'cosmic';
+    
+    // Animation phases
+    this.phase = 0;
+    this.pulsePhase = 0;
+    this.morphPhase = 0;
+    this.bloomPhase = 0;
+    this.breathePhase = 0;
+    
+    // Layers
+    this.layers = {
+      petals: true,
+      circles: true,
+      spirals: true,
+      triangles: false,
+      hexagons: false,
+      stars: false,
+      waves: false,
+      dots: false,
+      flower: false
+    };
+    
+    // Palettes
+    this.palettes = {
+      cosmic: ['#6b3fa0', '#9b4dca', '#e056fd', '#00d2d3', '#54a0ff', '#feca57'],
+      sunset: ['#ff6b6b', '#ee5a24', '#feca57', '#ff9ff3', '#fd79a8', '#fab1a0'],
+      ocean: ['#0abde3', '#10ac84', '#00d2d3', '#48dbfb', '#1dd1a1', '#00cec9'],
+      aurora: ['#5f27cd', '#00d2d3', '#1dd1a1', '#a29bfe', '#74b9ff', '#81ecec'],
+      fire: ['#ee5a24', '#f9ca24', '#ff6b6b', '#e17055', '#fdcb6e', '#e74c3c'],
+      mono: ['#dfe6e9', '#b2bec3', '#636e72', '#2d3436', '#95a5a6', '#ecf0f1'],
+      neon: ['#00ff87', '#60efff', '#ff00ff', '#7b2cbf', '#00f5d4', '#fee440']
+    };
+    
+    // Particles
+    this.particles = [];
+    for (let i = 0; i < 60; i++) {
+      this.particles.push({
+        angle: Math.random() * Math.PI * 2,
+        radius: Math.random() * 120 + 20,
+        speed: Math.random() * 0.02 + 0.003,
+        size: Math.random() * 3 + 1,
+        opacity: Math.random() * 0.6 + 0.2
+      });
+    }
+    
+    // Touch interaction state
+    this.touchTrails = [];
+    this.lastTap = 0;
+    this.touchStartTime = 0;
+    this.isZenMode = false;
+    this.gyroEnabled = false;
+    this.gyroData = { alpha: 0, beta: 0, gamma: 0 };
+    this.touchIntensity = 0;
+    
+    this.setupEventListeners();
+    this.setupTouchInteractions();
+    this.setupGyroscope();
+    this.setupTouchTrailCanvas();
+    this.setupMeditationTimer();
+    this.updateRatio();
+    this.render();
+    this.startAnimationLoop();
+    this.showInitialHints();
+  }
+  
+  initCanvas() {
+    // Set canvas size from HTML attributes or default
+    const size = 320;
+    this.canvas.width = size;
+    this.canvas.height = size;
+    this.canvasSize = size;
+    
+    // Initial background fill
+    this.ctx.fillStyle = 'rgba(10, 5, 20, 1)';
+    this.ctx.fillRect(0, 0, size, size);
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+      // Reset the render flag to do a full clear on resize
+      this.hasRendered = false;
+    });
+  }
+  
+  // ==================== TOUCH INTERACTIONS ====================
+  setupTouchInteractions() {
+    const canvas = this.canvas;
+    const wrapper = canvas.parentElement;
+    
+    // Touch start - create ripple
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      this.touchStartTime = Date.now();
+      
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      
+      this.createTouchRipple(touch.clientX, touch.clientY);
+      this.triggerHaptic('light');
+      
+      // Start touch intensity tracking
+      this.touchIntensity = 0.5;
+      this.updateIntensityMeter();
+    }, { passive: false });
+    
+    // Touch move - create trail particles
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      
+      Array.from(e.touches).forEach(touch => {
+        this.createTouchParticle(touch.clientX, touch.clientY);
+        this.addTrailPoint(touch.clientX, touch.clientY);
+        
+        // Modulate mandala based on touch position
+        const rect = canvas.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = touch.clientX - cx;
+        const dy = touch.clientY - cy;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const maxDist = rect.width / 2;
+        
+        this.touchIntensity = Math.min(1, distance / maxDist);
+        this.updateIntensityMeter();
+        
+        // Influence animation speed based on touch
+        const touchSpeedMod = 1 + this.touchIntensity * 2;
+        this.phase += 0.005 * touchSpeedMod;
+      });
+    }, { passive: false });
+    
+    // Touch end - check for gestures
+    canvas.addEventListener('touchend', (e) => {
+      const touchDuration = Date.now() - this.touchStartTime;
+      const now = Date.now();
+      
+      // Double tap detection
+      if (now - this.lastTap < 300) {
+        this.toggleZenMode();
+        this.triggerHaptic('medium');
+      }
+      this.lastTap = now;
+      
+      // Long press detection
+      if (touchDuration > 500) {
+        this.randomize();
+        this.showGestureHint('🎲', 'Randomized!');
+        this.triggerHaptic('heavy');
+      }
+      
+      this.touchIntensity = 0;
+      this.updateIntensityMeter();
+    });
+    
+    // Pinch to zoom
+    let initialPinchDistance = 0;
+    let initialSpeed = this.speed;
+    
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        initialPinchDistance = Math.sqrt(dx * dx + dy * dy);
+        initialSpeed = this.speed;
+      }
+    });
+    
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2) {
+        e.preventDefault();
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        const currentDistance = Math.sqrt(dx * dx + dy * dy);
+        const scale = currentDistance / initialPinchDistance;
+        
+        // Adjust speed based on pinch
+        this.speed = Math.max(1, Math.min(100, initialSpeed * scale));
+        document.getElementById('speed').value = this.speed;
+        
+        this.triggerHaptic('light');
+      }
+    }, { passive: false });
+    
+    // Swipe detection for layer cycling
+    let swipeStartX = 0;
+    let swipeStartY = 0;
+    
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        swipeStartX = e.touches[0].clientX;
+        swipeStartY = e.touches[0].clientY;
+      }
+    });
+    
+    canvas.addEventListener('touchend', (e) => {
+      const touchDuration = Date.now() - this.touchStartTime;
+      if (touchDuration > 300) return; // Not a swipe if held too long
+      
+      const touch = e.changedTouches[0];
+      const dx = touch.clientX - swipeStartX;
+      const dy = touch.clientY - swipeStartY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      if (distance > 50) { // Minimum swipe distance
+        if (Math.abs(dx) > Math.abs(dy)) {
+          // Horizontal swipe - cycle palette
+          this.cyclePalette(dx > 0 ? 1 : -1);
+          this.showGestureHint('🎨', dx > 0 ? 'Next Palette' : 'Previous Palette');
+        } else {
+          // Vertical swipe - cycle animation mode
+          this.cycleAnimMode(dy > 0 ? 1 : -1);
+          this.showGestureHint('✨', dy > 0 ? 'Next Animation' : 'Previous Animation');
+        }
+        this.triggerHaptic('light');
+      }
+    });
+    
+    // Shake detection
+    this.setupShakeDetection();
+    
+    // Fullscreen button
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+      this.toggleFullscreen();
+      this.triggerHaptic('light');
+    });
+    
+    // Zen mode exit
+    document.getElementById('zenExit').addEventListener('click', () => {
+      this.toggleZenMode();
+    });
+  }
+  
+  createTouchRipple(x, y) {
+    const ripple = document.createElement('div');
+    ripple.className = 'touch-ripple';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    
+    // Random color from palette
+    const colors = this.palettes[this.palette];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    ripple.style.background = `radial-gradient(circle, ${color}99, ${color}44, transparent)`;
+    
+    document.body.appendChild(ripple);
+    
+    setTimeout(() => ripple.remove(), 1200);
+  }
+  
+  createTouchParticle(x, y) {
+    const particle = document.createElement('div');
+    particle.className = 'touch-particle';
+    particle.style.left = (x + (Math.random() - 0.5) * 20) + 'px';
+    particle.style.top = (y + (Math.random() - 0.5) * 20) + 'px';
+    
+    const colors = this.palettes[this.palette];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    particle.style.background = color;
+    particle.style.boxShadow = `0 0 10px ${color}`;
+    
+    document.body.appendChild(particle);
+    
+    setTimeout(() => particle.remove(), 1500);
+  }
+  
+  triggerHaptic(intensity = 'light') {
+    if (!navigator.vibrate) return;
+    
+    switch(intensity) {
+      case 'light':
+        navigator.vibrate(10);
+        break;
+      case 'medium':
+        navigator.vibrate([20, 10, 20]);
+        break;
+      case 'heavy':
+        navigator.vibrate([30, 20, 30, 20, 50]);
+        break;
+    }
+  }
+  
+  showGestureHint(icon, text) {
+    const hint = document.getElementById('gestureHint');
+    hint.innerHTML = `<span class="icon">${icon}</span><span class="text">${text}</span>`;
+    hint.classList.add('visible');
+    
+    setTimeout(() => hint.classList.remove('visible'), 1500);
+  }
+  
+  cyclePalette(direction) {
+    const keys = Object.keys(this.palettes);
+    let currentIndex = keys.indexOf(this.palette);
+    currentIndex += direction;
+    if (currentIndex < 0) currentIndex = keys.length - 1;
+    if (currentIndex >= keys.length) currentIndex = 0;
+    
+    this.palette = keys[currentIndex];
+    document.querySelectorAll('.palette-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.palette === this.palette);
+    });
+  }
+  
+  cycleAnimMode(direction) {
+    const modes = ['rotate', 'pulse', 'morph', 'bloom', 'breathe'];
+    let currentIndex = modes.indexOf(this.animMode);
+    currentIndex += direction;
+    if (currentIndex < 0) currentIndex = modes.length - 1;
+    if (currentIndex >= modes.length) currentIndex = 0;
+    
+    this.animMode = modes[currentIndex];
+    document.querySelectorAll('.anim-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.mode === this.animMode);
+    });
+  }
+  
+  updateIntensityMeter() {
+    const meter = document.getElementById('intensityMeter');
+    const fill = document.getElementById('intensityFill');
+    
+    if (this.touchIntensity > 0) {
+      meter.classList.add('active');
+      fill.style.height = (this.touchIntensity * 100) + '%';
+    } else {
+      meter.classList.remove('active');
+    }
+  }
+  
+  // ==================== TOUCH TRAIL CANVAS ====================
+  setupTouchTrailCanvas() {
+    this.trailCanvas = document.getElementById('touchTrailCanvas');
+    this.trailCtx = this.trailCanvas.getContext('2d');
+    
+    const resize = () => {
+      this.trailCanvas.width = window.innerWidth;
+      this.trailCanvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+    
+    // Trail animation loop
+    const animateTrails = () => {
+      // Only process if there are trails
+      const hasTrails = this.touchTrails.some(t => t.length > 0);
+      
+      if (hasTrails) {
+        this.trailCanvas.classList.add('active');
+        
+        // Fade effect
+        this.trailCtx.fillStyle = 'rgba(10, 5, 20, 0.15)';
+        this.trailCtx.fillRect(0, 0, this.trailCanvas.width, this.trailCanvas.height);
+        
+        // Draw trails
+        this.touchTrails.forEach((trail, trailIndex) => {
+          if (trail.length < 2) return;
+          
+          const colors = this.palettes[this.palette];
+          
+          this.trailCtx.beginPath();
+          this.trailCtx.moveTo(trail[0].x, trail[0].y);
+          
+          for (let i = 1; i < trail.length; i++) {
+            const point = trail[i];
+            const prev = trail[i - 1];
+            const xc = (point.x + prev.x) / 2;
+            const yc = (point.y + prev.y) / 2;
+            this.trailCtx.quadraticCurveTo(prev.x, prev.y, xc, yc);
+          }
+          
+          const gradient = this.trailCtx.createLinearGradient(
+            trail[0].x, trail[0].y,
+            trail[trail.length - 1].x, trail[trail.length - 1].y
+          );
+          colors.forEach((c, i) => {
+            gradient.addColorStop(i / (colors.length - 1), c + '88');
+          });
+          
+          this.trailCtx.strokeStyle = gradient;
+          this.trailCtx.lineWidth = 4;
+          this.trailCtx.lineCap = 'round';
+          this.trailCtx.stroke();
+          
+          // Fade out trail points
+          trail.forEach(p => p.age = (p.age || 0) + 1);
+          this.touchTrails[trailIndex] = trail.filter(p => p.age < 30);
+        });
+      } else {
+        // Clear and hide when no trails
+        this.trailCanvas.classList.remove('active');
+        this.trailCtx.clearRect(0, 0, this.trailCanvas.width, this.trailCanvas.height);
+      }
+      
+      this.touchTrails = this.touchTrails.filter(t => t.length > 0);
+      
+      requestAnimationFrame(animateTrails);
+    };
+    animateTrails();
+  }
+  
+  addTrailPoint(x, y) {
+    if (this.touchTrails.length === 0) {
+      this.touchTrails.push([]);
+    }
+    this.touchTrails[this.touchTrails.length - 1].push({ x, y, age: 0 });
+  }
+  
+  // ==================== GYROSCOPE ====================
+  setupGyroscope() {
+    if (!window.DeviceOrientationEvent) return;
+    
+    // Request permission on iOS 13+
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // Need to request on user interaction
+      document.body.addEventListener('click', async () => {
+        if (this.gyroPermissionAsked) return;
+        this.gyroPermissionAsked = true;
+        
+        try {
+          const permission = await DeviceOrientationEvent.requestPermission();
+          if (permission === 'granted') {
+            this.enableGyroscope();
+          }
+        } catch (e) {
+          console.log('Gyroscope permission denied');
+        }
+      }, { once: true });
+    } else {
+      this.enableGyroscope();
+    }
+  }
+  
+  enableGyroscope() {
+    window.addEventListener('deviceorientation', (e) => {
+      if (!this.gyroEnabled) {
+        this.gyroEnabled = true;
+        document.getElementById('gyroIndicator').classList.add('active');
+      }
+      
+      this.gyroData = {
+        alpha: e.alpha || 0,
+        beta: e.beta || 0,
+        gamma: e.gamma || 0
+      };
+      
+      // Modulate mandala based on device tilt
+      const tiltInfluence = (this.gyroData.beta / 90) * 0.5 + (this.gyroData.gamma / 90) * 0.3;
+      this.phase += tiltInfluence * 0.01;
+    });
+  }
+  
+  // ==================== SHAKE DETECTION ====================
+  setupShakeDetection() {
+    if (!window.DeviceMotionEvent) return;
+    
+    let lastX = 0, lastY = 0, lastZ = 0;
+    let shakeThreshold = 15;
+    let lastShake = 0;
+    
+    window.addEventListener('devicemotion', (e) => {
+      const acc = e.accelerationIncludingGravity;
+      if (!acc) return;
+      
+      const deltaX = Math.abs(acc.x - lastX);
+      const deltaY = Math.abs(acc.y - lastY);
+      const deltaZ = Math.abs(acc.z - lastZ);
+      
+      if ((deltaX > shakeThreshold && deltaY > shakeThreshold) ||
+          (deltaX > shakeThreshold && deltaZ > shakeThreshold) ||
+          (deltaY > shakeThreshold && deltaZ > shakeThreshold)) {
+        
+        const now = Date.now();
+        if (now - lastShake > 1000) { // Debounce
+          lastShake = now;
+          this.randomize();
+          this.showGestureHint('🎲', 'Shake Randomized!');
+          this.triggerHaptic('heavy');
+        }
+      }
+      
+      lastX = acc.x;
+      lastY = acc.y;
+      lastZ = acc.z;
+    });
+  }
+  
+  // ==================== ZEN MODE ====================
+  toggleZenMode() {
+    this.isZenMode = !this.isZenMode;
+    const overlay = document.getElementById('zenOverlay');
+    const breathingGuide = document.getElementById('breathingGuide');
+    
+    if (this.isZenMode) {
+      overlay.classList.add('active');
+      breathingGuide.classList.add('active');
+      
+      // Move canvas to zen mode
+      const zenWrapper = document.getElementById('zenCanvasWrapper');
+      zenWrapper.appendChild(this.canvas.parentElement);
+      
+      // Start playing if not already
+      if (!this.isPlaying) {
+        document.getElementById('playBtn').click();
+      }
+      
+      // Set animation to breathe mode
+      this.animMode = 'breathe';
+      document.querySelectorAll('.anim-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === 'breathe');
+      });
+      
+      // Enter fullscreen if supported
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+    } else {
+      overlay.classList.remove('active');
+      breathingGuide.classList.remove('active');
+      
+      // Return canvas
+      const canvasSection = document.querySelector('.canvas-section');
+      canvasSection.appendChild(this.canvas.parentElement);
+      
+      // Exit fullscreen
+      if (document.fullscreenElement) {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+  }
+  
+  toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+      document.getElementById('fullscreenBtn').textContent = '⛶';
+    } else {
+      document.exitFullscreen().catch(() => {});
+      document.getElementById('fullscreenBtn').textContent = '⛶';
+    }
+  }
+  
+  showInitialHints() {
+    // Show tooltip after 3 seconds
+    setTimeout(() => {
+      const tooltip = document.getElementById('hintTooltip');
+      tooltip.classList.add('visible');
+      
+      setTimeout(() => tooltip.classList.remove('visible'), 4000);
+    }, 3000);
+  }
+  
+  // ==================== MEDITATION TIMER ====================
+  setupMeditationTimer() {
+    document.querySelectorAll('.timer-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const minutes = parseInt(chip.dataset.minutes);
+        this.startMeditationTimer(minutes);
+        this.triggerHaptic('medium');
+      });
+    });
+    
+    document.getElementById('timerCancel').addEventListener('click', () => {
+      this.cancelMeditationTimer();
+    });
+  }
+  
+  startMeditationTimer(minutes) {
+    // Play singing bowl sound
+    this.playSingingBowl();
+    
+    // Start playing if not already
+    if (!this.isPlaying) {
+      document.getElementById('playBtn').click();
+    }
+    
+    // Show timer
+    const display = document.getElementById('timerDisplay');
+    display.style.display = 'block';
+    
+    this.timerEndTime = Date.now() + minutes * 60 * 1000;
+    
+    this.timerInterval = setInterval(() => {
+      const remaining = this.timerEndTime - Date.now();
+      
+      if (remaining <= 0) {
+        this.endMeditationTimer();
+        return;
+      }
+      
+      const mins = Math.floor(remaining / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+      document.getElementById('timerValue').textContent = 
+        `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }, 1000);
+    
+    this.showGestureHint('🧘', `${minutes} minute meditation started`);
+  }
+  
+  cancelMeditationTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+    document.getElementById('timerDisplay').style.display = 'none';
+  }
+  
+  endMeditationTimer() {
+    this.cancelMeditationTimer();
+    
+    // Play three singing bowl sounds
+    this.playSingingBowl();
+    setTimeout(() => this.playSingingBowl(), 2000);
+    setTimeout(() => this.playSingingBowl(), 4000);
+    
+    this.triggerHaptic('heavy');
+    this.showGestureHint('🙏', 'Meditation Complete');
+  }
+  
+  // ==================== SINGING BOWL SOUND ====================
+  playSingingBowl() {
+    if (!this.audioCtx) this.initAudio();
+    if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+    
+    const now = this.audioCtx.currentTime;
+    
+    // Create singing bowl harmonics
+    const fundamentalFreq = 220; // A3
+    const harmonics = [1, 2, 3, 4.17, 5.43, 6.58]; // Singing bowl partial ratios
+    
+    const bowlGain = this.audioCtx.createGain();
+    bowlGain.gain.setValueAtTime(0, now);
+    bowlGain.gain.linearRampToValueAtTime(0.3, now + 0.1);
+    bowlGain.gain.exponentialRampToValueAtTime(0.001, now + 8);
+    bowlGain.connect(this.masterGain || this.audioCtx.destination);
+    
+    const oscillators = [];
+    
+    harmonics.forEach((ratio, i) => {
+      const osc = this.audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = fundamentalFreq * ratio;
+      
+      // Add slight pitch drift for realism
+      osc.frequency.linearRampToValueAtTime(
+        fundamentalFreq * ratio * 0.998, 
+        now + 8
+      );
+      
+      const oscGain = this.audioCtx.createGain();
+      // Higher harmonics decay faster
+      oscGain.gain.setValueAtTime(1 / (i + 1), now);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, now + 6 - i * 0.5);
+      
+      osc.connect(oscGain);
+      oscGain.connect(bowlGain);
+      osc.start(now);
+      osc.stop(now + 10);
+      oscillators.push(osc);
+    });
+    
+    // Add shimmer/beating effect
+    const shimmerOsc = this.audioCtx.createOscillator();
+    shimmerOsc.type = 'sine';
+    shimmerOsc.frequency.value = fundamentalFreq + 1.5; // Slight detuning for beating
+    
+    const shimmerGain = this.audioCtx.createGain();
+    shimmerGain.gain.setValueAtTime(0.15, now);
+    shimmerGain.gain.exponentialRampToValueAtTime(0.001, now + 7);
+    
+    shimmerOsc.connect(shimmerGain);
+    shimmerGain.connect(bowlGain);
+    shimmerOsc.start(now);
+    shimmerOsc.stop(now + 10);
+  }
+  
+  setupEventListeners() {
+    // Frequency sliders
+    document.getElementById('freqL').addEventListener('input', (e) => {
+      this.freqL = parseInt(e.target.value);
+      document.getElementById('freqLDisplay').textContent = this.freqL;
+      this.updateRatio();
+      this.updateAudioFrequencies();
+    });
+    
+    document.getElementById('freqR').addEventListener('input', (e) => {
+      this.freqR = parseInt(e.target.value);
+      document.getElementById('freqRDisplay').textContent = this.freqR;
+      this.updateRatio();
+      this.updateAudioFrequencies();
+    });
+    
+    // Presets (excluding timer chips)
+    document.querySelectorAll('.preset-chip:not(.timer-chip)').forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (!chip.dataset.left || !chip.dataset.right) return;
+        this.freqL = parseInt(chip.dataset.left);
+        this.freqR = parseInt(chip.dataset.right);
+        document.getElementById('freqL').value = this.freqL;
+        document.getElementById('freqR').value = this.freqR;
+        document.getElementById('freqLDisplay').textContent = this.freqL;
+        document.getElementById('freqRDisplay').textContent = this.freqR;
+        this.updateRatio();
+        this.updateAudioFrequencies();
+      });
+    });
+    
+    // Layer toggles (excluding nature sound buttons)
+    document.querySelectorAll('.layer-btn:not(.nature-btn)').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!btn.dataset.layer) return;
+        btn.classList.toggle('active');
+        this.layers[btn.dataset.layer] = btn.classList.contains('active');
+      });
+    });
+    
+    // Animation modes
+    document.querySelectorAll('.anim-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.anim-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.animMode = btn.dataset.mode;
+      });
+    });
+    
+    // Speed
+    document.getElementById('speed').addEventListener('input', (e) => {
+      this.speed = parseInt(e.target.value);
+    });
+    
+    // Volume
+    document.getElementById('volume').addEventListener('input', (e) => {
+      this.volume = parseInt(e.target.value) / 100;
+      if (this.masterGain) {
+        this.masterGain.gain.linearRampToValueAtTime(this.volume * 0.6, this.audioCtx.currentTime + 0.1);
+      }
+    });
+    
+    // Mouse interactions for desktop
+    this.canvas.addEventListener('mousedown', (e) => {
+      this.touchStartTime = Date.now();
+      const rect = this.canvas.getBoundingClientRect();
+      this.createTouchRipple(e.clientX, e.clientY);
+      this.touchIntensity = 0.5;
+      this.updateIntensityMeter();
+    });
+    
+    this.canvas.addEventListener('mousemove', (e) => {
+      if (e.buttons !== 1) return; // Only when mouse is pressed
+      
+      const rect = this.canvas.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = e.clientX - cx;
+      const dy = e.clientY - cy;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const maxDist = rect.width / 2;
+      
+      this.touchIntensity = Math.min(1, distance / maxDist);
+      this.updateIntensityMeter();
+      
+      this.createTouchParticle(e.clientX, e.clientY);
+      this.addTrailPoint(e.clientX, e.clientY);
+      
+      const touchSpeedMod = 1 + this.touchIntensity * 2;
+      this.phase += 0.005 * touchSpeedMod;
+    });
+    
+    this.canvas.addEventListener('mouseup', () => {
+      const touchDuration = Date.now() - this.touchStartTime;
+      
+      // Long press detection
+      if (touchDuration > 500) {
+        this.randomize();
+        this.showGestureHint('🎲', 'Randomized!');
+      }
+      
+      this.touchIntensity = 0;
+      this.updateIntensityMeter();
+    });
+    
+    this.canvas.addEventListener('dblclick', () => {
+      this.toggleZenMode();
+    });
+    
+    // Palettes
+    document.querySelectorAll('.palette-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.palette = btn.dataset.palette;
+      });
+    });
+    
+    // Play button
+    document.getElementById('playBtn').addEventListener('click', () => {
+      this.isPlaying = !this.isPlaying;
+      const btn = document.getElementById('playBtn');
+      btn.classList.toggle('playing', this.isPlaying);
+      btn.innerHTML = this.isPlaying ? '<span>⏸</span><span>Pause</span>' : '<span>▶</span><span>Play</span>';
+      
+      // Toggle audio
+      if (this.isPlaying) {
+        this.startAudio();
+      } else {
+        this.stopAudio();
+      }
+    });
+    
+    // Random
+    document.getElementById('randomBtn').addEventListener('click', () => this.randomize());
+    
+    // Reset
+    document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+    
+    // Singing Bowl button
+    document.getElementById('bowlBtn').addEventListener('click', () => {
+      this.playSingingBowl();
+      this.triggerHaptic('medium');
+    });
+    
+    // Nature sounds
+    this.natureSounds = { rain: null, wind: null, birds: null, ocean: null, fire: null, forest: null, nature: null };
+    document.querySelectorAll('.nature-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sound = btn.dataset.sound;
+        btn.classList.toggle('active');
+        
+        if (btn.classList.contains('active')) {
+          this.startNatureSound(sound);
+        } else {
+          this.stopNatureSound(sound);
+        }
+        this.triggerHaptic('light');
+      });
+    });
+    
+    // Nature sound shuffle buttons
+    document.querySelectorAll('.shuffle-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sound = btn.dataset.shuffle;
+        if (this.natureSounds[sound]) {
+          this.shuffleNatureSound(sound);
+          this.triggerHaptic('light');
+        } else {
+          this.showGestureHint('💡', `Enable ${sound} first`);
+        }
+      });
+    });
+  }
+  
+  updateRatio() {
+    const gcd = this.gcd(this.freqL, this.freqR);
+    const simpleL = Math.round(this.freqL / gcd);
+    const simpleR = Math.round(this.freqR / gcd);
+    
+    document.getElementById('ratioDisplay').textContent = `${simpleL}:${simpleR}`;
+    
+    // Determine interval
+    const ratio = Math.min(this.freqL, this.freqR) / Math.max(this.freqL, this.freqR);
+    let interval = 'Complex';
+    
+    if (Math.abs(ratio - 1) < 0.02) interval = 'Unison';
+    else if (Math.abs(ratio - 0.5) < 0.02) interval = 'Octave';
+    else if (Math.abs(ratio - 2/3) < 0.03) interval = 'Perfect Fifth';
+    else if (Math.abs(ratio - 3/4) < 0.03) interval = 'Perfect Fourth';
+    else if (Math.abs(ratio - 4/5) < 0.03) interval = 'Major Third';
+    else if (Math.abs(ratio - 5/6) < 0.03) interval = 'Minor Third';
+    else if (Math.abs(ratio - 3/5) < 0.03) interval = 'Major Sixth';
+    else if (Math.abs(ratio - 5/8) < 0.03) interval = 'Minor Sixth';
+    else if (Math.abs(ratio - 8/9) < 0.03) interval = 'Major Second';
+    else if (Math.abs(ratio - 15/16) < 0.02) interval = 'Minor Second';
+    
+    document.getElementById('intervalDisplay').textContent = interval;
+  }
+  
+  gcd(a, b) {
+    a = Math.abs(Math.round(a));
+    b = Math.abs(Math.round(b));
+    while (b) {
+      const t = b;
+      b = a % b;
+      a = t;
+    }
+    return a || 1;
+  }
+  
+  randomize() {
+    this.freqL = Math.floor(Math.random() * 800) + 100;
+    this.freqR = Math.floor(Math.random() * 800) + 100;
+    
+    document.getElementById('freqL').value = this.freqL;
+    document.getElementById('freqR').value = this.freqR;
+    document.getElementById('freqLDisplay').textContent = this.freqL;
+    document.getElementById('freqRDisplay').textContent = this.freqR;
+    
+    // Random layers
+    document.querySelectorAll('.layer-btn').forEach(btn => {
+      const active = Math.random() > 0.5;
+      btn.classList.toggle('active', active);
+      this.layers[btn.dataset.layer] = active;
+    });
+    
+    // Random palette
+    const paletteKeys = Object.keys(this.palettes);
+    this.palette = paletteKeys[Math.floor(Math.random() * paletteKeys.length)];
+    document.querySelectorAll('.palette-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.palette === this.palette);
+    });
+    
+    this.updateRatio();
+    this.updateAudioFrequencies();
+  }
+  
+  reset() {
+    // Stop audio and animation
+    this.isPlaying = false;
+    this.stopAudio();
+    const btn = document.getElementById('playBtn');
+    btn.classList.remove('playing');
+    btn.innerHTML = '<span>▶</span><span>Play</span>';
+    
+    this.freqL = 432;
+    this.freqR = 528;
+    this.phase = 0;
+    this.pulsePhase = 0;
+    this.morphPhase = 0;
+    
+    document.getElementById('freqL').value = 432;
+    document.getElementById('freqR').value = 528;
+    document.getElementById('freqLDisplay').textContent = '432';
+    document.getElementById('freqRDisplay').textContent = '528';
+    
+    // Reset layers
+    this.layers = { petals: true, circles: true, spirals: true, triangles: false, hexagons: false, stars: false, waves: false, dots: false, flower: false };
+    document.querySelectorAll('.layer-btn').forEach(btn => {
+      btn.classList.toggle('active', this.layers[btn.dataset.layer]);
+    });
+    
+    this.updateRatio();
+  }
+  
+  startAnimationLoop() {
+    const loop = () => {
+      this.render();
+      requestAnimationFrame(loop);
+    };
+    loop();
+  }
+  
+  render() {
+    const ctx = this.ctx;
+    const size = this.canvasSize || this.canvas.width;
+    const cx = size / 2;
+    const cy = size / 2;
+    const maxR = size / 2 - 15;
+    
+    // On first render, do a full clear
+    if (!this.hasRendered) {
+      ctx.fillStyle = 'rgba(10, 5, 20, 1)';
+      ctx.fillRect(0, 0, size, size);
+      this.hasRendered = true;
+    } else {
+      // Clear with trail effect
+      ctx.fillStyle = 'rgba(10, 5, 20, 0.12)';
+      ctx.fillRect(0, 0, size, size);
+    }
+    
+    // Get colors
+    const colors = this.palettes[this.palette];
+    
+    // Calculate parameters from frequencies
+    const freqRatio = this.freqL / this.freqR;
+    const freqSum = this.freqL + this.freqR;
+    const freqDiff = Math.abs(this.freqL - this.freqR);
+    
+    const numPetals = Math.floor((freqSum / 80) % 20) + 5;
+    const numLayers = Math.floor(freqRatio * 5) + 3;
+    const spiralTurns = (freqDiff / 80) + 2;
+    
+    // Update animation phases
+    const speedFactor = this.speed / 50;
+    
+    if (this.isPlaying) {
+      this.phase += 0.008 * speedFactor;
+      this.pulsePhase += 0.025 * speedFactor;
+      this.morphPhase += 0.004 * speedFactor;
+      this.bloomPhase += 0.015 * speedFactor;
+      this.breathePhase += 0.01 * speedFactor;
+    }
+    
+    // Animation transforms
+    let rotationOffset = 0;
+    let scaleOffset = 1;
+    let morphOffset = 0;
+    
+    switch (this.animMode) {
+      case 'rotate':
+        rotationOffset = this.phase;
+        break;
+      case 'pulse':
+        scaleOffset = 1 + Math.sin(this.pulsePhase) * 0.12;
+        break;
+      case 'morph':
+        morphOffset = Math.sin(this.morphPhase) * 0.25;
+        break;
+      case 'bloom':
+        scaleOffset = 1 + Math.sin(this.bloomPhase) * 0.08;
+        rotationOffset = this.phase * 0.5;
+        break;
+      case 'breathe':
+        scaleOffset = 1 + Math.sin(this.breathePhase) * 0.15;
+        rotationOffset = Math.sin(this.breathePhase * 0.5) * 0.1;
+        break;
+    }
+    
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(scaleOffset, scaleOffset);
+    
+    // ========== DRAW LAYERS ==========
+    
+    // CIRCLES
+    if (this.layers.circles) {
+      for (let i = 0; i < numLayers; i++) {
+        const r = (maxR / numLayers) * (i + 1);
+        const color = colors[i % colors.length];
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.strokeStyle = this.rgba(color, 0.25 + (i / numLayers) * 0.25);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+    
+    // PETALS
+    if (this.layers.petals) {
+      for (let layer = 0; layer < numLayers; layer++) {
+        const layerR = maxR * ((layer + 1) / numLayers);
+        const petalCount = numPetals + layer * 2;
+        
+        for (let i = 0; i < petalCount; i++) {
+          const angle = (i / petalCount) * Math.PI * 2 + rotationOffset + layer * 0.08;
+          const color = colors[(i + layer) % colors.length];
+          
+          const innerR = layerR * 0.25;
+          const outerR = layerR * (0.85 + morphOffset * 0.1);
+          
+          const spread = 0.18 + morphOffset * 0.08;
+          const cpR = layerR * 0.6;
+          
+          ctx.beginPath();
+          ctx.moveTo(Math.cos(angle) * innerR, Math.sin(angle) * innerR);
+          ctx.bezierCurveTo(
+            Math.cos(angle + spread) * cpR, Math.sin(angle + spread) * cpR,
+            Math.cos(angle + spread) * cpR, Math.sin(angle + spread) * cpR,
+            Math.cos(angle) * outerR, Math.sin(angle) * outerR
+          );
+          ctx.bezierCurveTo(
+            Math.cos(angle - spread) * cpR, Math.sin(angle - spread) * cpR,
+            Math.cos(angle - spread) * cpR, Math.sin(angle - spread) * cpR,
+            Math.cos(angle) * innerR, Math.sin(angle) * innerR
+          );
+          ctx.fillStyle = this.rgba(color, 0.12 + layer * 0.04);
+          ctx.fill();
+          ctx.strokeStyle = this.rgba(color, 0.45);
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+    
+    // SPIRALS
+    if (this.layers.spirals) {
+      const spiralCount = Math.floor(freqRatio * 3) + 2;
+      for (let s = 0; s < spiralCount; s++) {
+        const spiralOff = (s / spiralCount) * Math.PI * 2;
+        const color = colors[s % colors.length];
+        ctx.beginPath();
+        for (let t = 0; t < spiralTurns * Math.PI * 2; t += 0.08) {
+          const r = (t / (spiralTurns * Math.PI * 2)) * maxR * 0.85;
+          const a = t + spiralOff + rotationOffset;
+          if (t === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+          else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+        ctx.strokeStyle = this.rgba(color, 0.35);
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      }
+    }
+    
+    // TRIANGLES
+    if (this.layers.triangles) {
+      const triCount = Math.floor(numPetals / 2) + 1;
+      for (let i = 0; i < triCount; i++) {
+        const angle = (i / triCount) * Math.PI * 2 + rotationOffset;
+        const color = colors[i % colors.length];
+        ctx.beginPath();
+        for (let v = 0; v < 3; v++) {
+          const vAngle = angle + (v / 3) * Math.PI * 2;
+          const vr = v === 0 ? maxR * 0.25 : maxR * 0.75;
+          const x = Math.cos(vAngle) * vr;
+          const y = Math.sin(vAngle) * vr;
+          if (v === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = this.rgba(color, 0.4);
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+    }
+    
+    // HEXAGONS
+    if (this.layers.hexagons) {
+      for (let layer = 1; layer <= 3; layer++) {
+        const r = (maxR / 3) * layer * 0.8;
+        const color = colors[layer % colors.length];
+        ctx.beginPath();
+        for (let i = 0; i <= 6; i++) {
+          const a = (i / 6) * Math.PI * 2 - Math.PI / 2 + rotationOffset * 0.5;
+          if (i === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+          else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+        ctx.strokeStyle = this.rgba(color, 0.4);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+    
+    // STARS
+    if (this.layers.stars) {
+      const points = numPetals;
+      for (let layer = 0; layer < 2; layer++) {
+        const r = maxR * (0.4 + layer * 0.35);
+        const color = colors[layer % colors.length];
+        ctx.beginPath();
+        for (let i = 0; i <= points * 2; i++) {
+          const a = (i / (points * 2)) * Math.PI * 2 + rotationOffset;
+          const radius = i % 2 === 0 ? r : r * 0.45;
+          if (i === 0) ctx.moveTo(Math.cos(a) * radius, Math.sin(a) * radius);
+          else ctx.lineTo(Math.cos(a) * radius, Math.sin(a) * radius);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = this.rgba(color, 0.5);
+        ctx.lineWidth = 1.3;
+        ctx.stroke();
+      }
+    }
+    
+    // WAVES
+    if (this.layers.waves) {
+      const waveCount = 4;
+      for (let w = 0; w < waveCount; w++) {
+        const baseR = maxR * (0.3 + w * 0.18);
+        const color = colors[w % colors.length];
+        ctx.beginPath();
+        for (let a = 0; a <= Math.PI * 2; a += 0.05) {
+          const wave = Math.sin(a * numPetals + this.phase * 3) * 10;
+          const r = baseR + wave;
+          if (a === 0) ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r);
+          else ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
+        }
+        ctx.strokeStyle = this.rgba(color, 0.4);
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+    
+    // DOTS
+    if (this.layers.dots) {
+      const dotLayers = 4;
+      for (let layer = 1; layer <= dotLayers; layer++) {
+        const r = (maxR / dotLayers) * layer * 0.9;
+        const dotCount = layer * 6;
+        const color = colors[layer % colors.length];
+        for (let i = 0; i < dotCount; i++) {
+          const a = (i / dotCount) * Math.PI * 2 + rotationOffset + layer * 0.1;
+          ctx.beginPath();
+          ctx.arc(Math.cos(a) * r, Math.sin(a) * r, 3, 0, Math.PI * 2);
+          ctx.fillStyle = this.rgba(color, 0.6);
+          ctx.fill();
+        }
+      }
+    }
+    
+    // FLOWER OF LIFE
+    if (this.layers.flower) {
+      const flowerR = maxR * 0.25;
+      const color = colors[0];
+      // Center
+      ctx.beginPath();
+      ctx.arc(0, 0, flowerR, 0, Math.PI * 2);
+      ctx.strokeStyle = this.rgba(color, 0.3);
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      // Surrounding
+      for (let i = 0; i < 6; i++) {
+        const a = (i / 6) * Math.PI * 2 + rotationOffset;
+        ctx.beginPath();
+        ctx.arc(Math.cos(a) * flowerR, Math.sin(a) * flowerR, flowerR, 0, Math.PI * 2);
+        ctx.strokeStyle = this.rgba(colors[(i + 1) % colors.length], 0.3);
+        ctx.stroke();
+      }
+    }
+    
+    // PARTICLES
+    if (this.isPlaying) {
+      this.particles.forEach(p => {
+        p.angle += p.speed * speedFactor;
+        const x = Math.cos(p.angle) * p.radius;
+        const y = Math.sin(p.angle) * p.radius;
+        const color = colors[Math.floor(p.angle * 2) % colors.length];
+        ctx.beginPath();
+        ctx.arc(x, y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.rgba(color, p.opacity);
+        ctx.fill();
+      });
+    }
+    
+    // CENTER
+    const centerGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 25);
+    centerGrad.addColorStop(0, this.rgba(colors[0], 0.9));
+    centerGrad.addColorStop(0.5, this.rgba(colors[2], 0.5));
+    centerGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(0, 0, 25, 0, Math.PI * 2);
+    ctx.fillStyle = centerGrad;
+    ctx.fill();
+    
+    // Sacred symbol with glow
+    const glowIntensity = 0.5 + Math.sin(this.breathePhase) * 0.3 + this.touchIntensity * 0.3;
+    ctx.shadowColor = colors[0];
+    ctx.shadowBlur = 20 * glowIntensity;
+    ctx.font = '16px serif';
+    ctx.fillStyle = `rgba(255,255,255,${0.7 + glowIntensity * 0.3})`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('✧', 0, 0);
+    ctx.shadowBlur = 0;
+    
+    // Touch reactive aura
+    if (this.touchIntensity > 0) {
+      const auraSize = 30 + this.touchIntensity * 40;
+      const auraGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, auraSize);
+      auraGrad.addColorStop(0, this.rgba(colors[0], 0.4 * this.touchIntensity));
+      auraGrad.addColorStop(0.5, this.rgba(colors[2], 0.2 * this.touchIntensity));
+      auraGrad.addColorStop(1, 'transparent');
+      ctx.beginPath();
+      ctx.arc(0, 0, auraSize, 0, Math.PI * 2);
+      ctx.fillStyle = auraGrad;
+      ctx.fill();
+    }
+    
+    // Gyroscope reactive elements
+    if (this.gyroEnabled && this.gyroData) {
+      const gyroOffset = this.gyroData.gamma / 45;
+      const gyroTilt = this.gyroData.beta / 90;
+      
+      // Subtle gyro-influenced inner ring
+      ctx.beginPath();
+      ctx.arc(gyroOffset * 5, gyroTilt * 5, 35, 0, Math.PI * 2);
+      ctx.strokeStyle = this.rgba(colors[3], 0.2);
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+    
+    ctx.restore();
+    
+    // Breathing guide sync
+    if (this.isPlaying && this.isZenMode) {
+      this.updateBreathingGuide();
+    }
+  }
+  
+  updateBreathingGuide() {
+    const guide = document.getElementById('breathingGuide');
+    const cycle = this.breathePhase % (Math.PI * 2);
+    
+    let text = '';
+    if (cycle < Math.PI * 0.5) {
+      text = '✧ Breathe In... ✧';
+    } else if (cycle < Math.PI) {
+      text = '✧ Hold... ✧';
+    } else if (cycle < Math.PI * 1.5) {
+      text = '✧ Breathe Out... ✧';
+    } else {
+      text = '✧ Rest... ✧';
+    }
+    
+    if (guide.textContent !== text) {
+      guide.textContent = text;
+    }
+  }
+  
+  rgba(hex, alpha) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r},${g},${b},${alpha})`;
+  }
+  
+  // ==================== AMBIENT AUDIO ENGINE ====================
+  initAudio() {
+    if (this.audioCtx) return;
+    
+    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    
+    // Master chain with gentle compression for smoothness
+    this.masterGain = this.audioCtx.createGain();
+    this.masterGain.gain.value = 0.7; // Increased for better audibility
+    
+    // Create a gentle limiter/compressor for warmth
+    this.compressor = this.audioCtx.createDynamicsCompressor();
+    this.compressor.threshold.value = -12;
+    this.compressor.knee.value = 20;
+    this.compressor.ratio.value = 3;
+    this.compressor.attack.value = 0.05;
+    this.compressor.release.value = 0.25;
+    
+    // Warm filter for the entire output - higher cutoff for clarity
+    this.masterFilter = this.audioCtx.createBiquadFilter();
+    this.masterFilter.type = 'lowpass';
+    this.masterFilter.frequency.value = 8000; // Higher for more clarity
+    this.masterFilter.Q.value = 0.3;
+    
+    // Reverb via convolver
+    this.createReverb();
+    
+    // Connect master chain
+    this.masterGain.connect(this.masterFilter);
+    this.masterFilter.connect(this.compressor);
+    this.compressor.connect(this.audioCtx.destination);
+    
+    // Stereo panners for binaural
+    this.leftPanner = this.audioCtx.createStereoPanner();
+    this.rightPanner = this.audioCtx.createStereoPanner();
+    this.leftPanner.pan.value = -0.85;
+    this.rightPanner.pan.value = 0.85;
+    this.leftPanner.connect(this.masterGain);
+    this.rightPanner.connect(this.masterGain);
+    
+    // Modulation LFO for breathing effect
+    this.breathLFO = this.audioCtx.createOscillator();
+    this.breathLFO.type = 'sine';
+    this.breathLFO.frequency.value = 0.08; // Very slow breathing
+    this.breathGain = this.audioCtx.createGain();
+    this.breathGain.gain.value = 0.15;
+    this.breathLFO.connect(this.breathGain);
+    this.breathLFO.start();
+  }
+  
+  createReverb() {
+    // Create impulse response for lush reverb
+    const sampleRate = this.audioCtx.sampleRate;
+    const length = sampleRate * 3; // 3 second reverb
+    const impulse = this.audioCtx.createBuffer(2, length, sampleRate);
+    
+    for (let channel = 0; channel < 2; channel++) {
+      const channelData = impulse.getChannelData(channel);
+      for (let i = 0; i < length; i++) {
+        const decay = Math.pow(1 - i / length, 2.5);
+        channelData[i] = (Math.random() * 2 - 1) * decay * 0.3;
+      }
+    }
+    
+    this.reverb = this.audioCtx.createConvolver();
+    this.reverb.buffer = impulse;
+    this.reverbGain = this.audioCtx.createGain();
+    this.reverbGain.gain.value = 0.35;
+    this.reverb.connect(this.reverbGain);
+    this.reverbGain.connect(this.masterGain);
+  }
+  
+  // Create a warm pad oscillator with harmonics
+  createWarmPad(frequency, destination) {
+    const voices = [];
+    const fundamentalGain = this.audioCtx.createGain();
+    fundamentalGain.gain.value = 0.1; // Start with small value, not zero
+    fundamentalGain.connect(destination);
+    
+    // Fundamental - soft triangle wave
+    const fundamental = this.audioCtx.createOscillator();
+    fundamental.type = 'triangle';
+    fundamental.frequency.value = frequency;
+    
+    // Soft filter for warmth
+    const filter = this.audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 1200; // Higher cutoff for more audible sound
+    filter.Q.value = 0.7;
+    
+    fundamental.connect(filter);
+    filter.connect(fundamentalGain);
+    fundamental.start();
+    voices.push(fundamental);
+    
+    // Subtle octave below (sub bass)
+    if (frequency > 80) {
+      const subOsc = this.audioCtx.createOscillator();
+      subOsc.type = 'sine';
+      subOsc.frequency.value = frequency / 2;
+      const subGain = this.audioCtx.createGain();
+      subGain.gain.value = 0.4;
+      subOsc.connect(subGain);
+      subGain.connect(fundamentalGain);
+      subOsc.start();
+      voices.push(subOsc);
+    }
+    
+    // Soft 5th harmonic for richness
+    const fifth = this.audioCtx.createOscillator();
+    fifth.type = 'sine';
+    fifth.frequency.value = frequency * 1.5;
+    const fifthGain = this.audioCtx.createGain();
+    fifthGain.gain.value = 0.15;
+    const fifthFilter = this.audioCtx.createBiquadFilter();
+    fifthFilter.type = 'lowpass';
+    fifthFilter.frequency.value = 800;
+    fifth.connect(fifthFilter);
+    fifthFilter.connect(fifthGain);
+    fifthGain.connect(fundamentalGain);
+    fifth.start();
+    voices.push(fifth);
+    
+    return { voices, gainNode: fundamentalGain, filter };
+  }
+  
+  // Create ambient drone layer
+  createAmbientDrone() {
+    const droneGain = this.audioCtx.createGain();
+    droneGain.gain.value = 0;
+    droneGain.connect(this.reverb);
+    droneGain.connect(this.masterGain);
+    
+    // Very low fundamental drone
+    const baseFreq = 55; // A1 - very low
+    const drones = [];
+    
+    // Multiple detuned oscillators for thickness
+    for (let i = 0; i < 4; i++) {
+      const osc = this.audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = baseFreq * (1 + (Math.random() - 0.5) * 0.01);
+      
+      const filter = this.audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.value = 200;
+      filter.Q.value = 2;
+      
+      const oscGain = this.audioCtx.createGain();
+      oscGain.gain.value = 0.15;
+      
+      osc.connect(filter);
+      filter.connect(oscGain);
+      oscGain.connect(droneGain);
+      osc.start();
+      drones.push(osc);
+    }
+    
+    // Slow panning LFO for spatial movement
+    const panLFO = this.audioCtx.createOscillator();
+    panLFO.type = 'sine';
+    panLFO.frequency.value = 0.03;
+    const panGain = this.audioCtx.createGain();
+    panGain.gain.value = 0.3;
+    panLFO.connect(panGain);
+    
+    const dronePanner = this.audioCtx.createStereoPanner();
+    panGain.connect(dronePanner.pan);
+    droneGain.connect(dronePanner);
+    dronePanner.connect(this.masterGain);
+    panLFO.start();
+    
+    return { drones, gainNode: droneGain, panLFO };
+  }
+  
+  // Create shimmer layer
+  createShimmer() {
+    const shimmerGain = this.audioCtx.createGain();
+    shimmerGain.gain.value = 0;
+    
+    const shimmerFilter = this.audioCtx.createBiquadFilter();
+    shimmerFilter.type = 'bandpass';
+    shimmerFilter.frequency.value = 2000;
+    shimmerFilter.Q.value = 0.5;
+    
+    shimmerFilter.connect(shimmerGain);
+    shimmerGain.connect(this.reverb);
+    shimmerGain.connect(this.masterGain); // Also connect directly for more presence
+    
+    const oscillators = [];
+    const baseFreqs = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    
+    baseFreqs.forEach((freq, i) => {
+      const osc = this.audioCtx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      
+      // Tremolo
+      const tremolo = this.audioCtx.createGain();
+      tremolo.gain.value = 0.5;
+      
+      const tremoloLFO = this.audioCtx.createOscillator();
+      tremoloLFO.type = 'sine';
+      tremoloLFO.frequency.value = 0.2 + i * 0.1;
+      const tremoloDepth = this.audioCtx.createGain();
+      tremoloDepth.gain.value = 0.4;
+      tremoloLFO.connect(tremoloDepth);
+      tremoloDepth.connect(tremolo.gain);
+      tremoloLFO.start();
+      
+      const oscGain = this.audioCtx.createGain();
+      oscGain.gain.value = 0.08;
+      
+      osc.connect(tremolo);
+      tremolo.connect(oscGain);
+      oscGain.connect(shimmerFilter);
+      osc.start();
+      oscillators.push({ osc, tremoloLFO });
+    });
+    
+    return { oscillators, gainNode: shimmerGain, filter: shimmerFilter };
+  }
+  
+  startAudio() {
+    this.initAudio();
+    
+    if (this.audioCtx.state === 'suspended') {
+      this.audioCtx.resume();
+    }
+    
+    const now = this.audioCtx.currentTime;
+    
+    // Binaural carrier frequency - use a pleasant mid-range base
+    // Scale down the user frequencies to a more pleasant listening range
+    const baseFreq = 150; // Pleasant base frequency
+    const binauralBeat = Math.abs(this.freqL - this.freqR) * 0.05; // Very subtle beat
+    const clampedBeat = Math.max(0.5, Math.min(binauralBeat, 10)); // Keep between 0.5-10Hz
+    
+    console.log('Starting audio with carrier:', baseFreq, 'beat:', clampedBeat);
+    
+    // Left ear pad
+    this.leftPad = this.createWarmPad(baseFreq, this.leftPanner);
+    this.leftPad.gainNode.gain.cancelScheduledValues(now);
+    this.leftPad.gainNode.gain.setValueAtTime(0.01, now);
+    this.leftPad.gainNode.gain.linearRampToValueAtTime(0.3, now + 2);
+    
+    // Right ear pad (slightly detuned for binaural)
+    this.rightPad = this.createWarmPad(baseFreq + clampedBeat, this.rightPanner);
+    this.rightPad.gainNode.gain.cancelScheduledValues(now);
+    this.rightPad.gainNode.gain.setValueAtTime(0.01, now);
+    this.rightPad.gainNode.gain.linearRampToValueAtTime(0.3, now + 2);
+    
+    // Ambient drone
+    this.ambientDrone = this.createAmbientDrone();
+    this.ambientDrone.gainNode.gain.cancelScheduledValues(now);
+    this.ambientDrone.gainNode.gain.setValueAtTime(0.01, now);
+    this.ambientDrone.gainNode.gain.linearRampToValueAtTime(0.25, now + 3);
+    
+    // Shimmer layer
+    this.shimmerLayer = this.createShimmer();
+    this.shimmerLayer.gainNode.gain.cancelScheduledValues(now);
+    this.shimmerLayer.gainNode.gain.setValueAtTime(0.01, now);
+    this.shimmerLayer.gainNode.gain.linearRampToValueAtTime(0.15, now + 4);
+    
+    // Dynamic modulation tied to animation
+    this.startDynamicModulation();
+    
+    this.audioPlaying = true;
+    this.updateAudioIndicator();
+    
+    console.log('Audio started, context state:', this.audioCtx.state);
+  }
+  
+  startDynamicModulation() {
+    // Delay modulation start to let audio fade in first
+    setTimeout(() => {
+      // Modulate audio based on mandala animation
+      this.modulationInterval = setInterval(() => {
+        if (!this.audioPlaying || !this.audioCtx) return;
+        
+        const now = this.audioCtx.currentTime;
+        const phase = this.phase || 0;
+        const breathePhase = this.breathePhase || 0;
+        
+        // Subtle filter modulation - keep it high enough to hear
+        if (this.masterFilter) {
+          const filterMod = 5000 + Math.sin(phase * 0.3) * 2000;
+          this.masterFilter.frequency.setTargetAtTime(filterMod, now, 0.5);
+        }
+        
+        // Modulate shimmer based on speed
+        if (this.shimmerLayer && this.shimmerLayer.filter) {
+          const shimmerMod = 2000 + Math.sin(breathePhase) * 500;
+          this.shimmerLayer.filter.frequency.setTargetAtTime(shimmerMod, now, 0.3);
+        }
+        
+        // Very subtle volume breathing - don't reduce too much
+        const pulseMod = 0.65 + Math.sin(breathePhase * 0.3) * 0.1;
+        if (this.masterGain) {
+          this.masterGain.gain.setTargetAtTime(pulseMod, now, 0.5);
+        }
+      }, 150);
+    }, 3000); // Wait 3 seconds before starting modulation
+  }
+  
+  stopAudio() {
+    if (!this.audioCtx || !this.audioPlaying) return;
+    
+    const now = this.audioCtx.currentTime;
+    const fadeTime = 2; // Long gentle fade
+    
+    // Clear modulation
+    if (this.modulationInterval) {
+      clearInterval(this.modulationInterval);
+    }
+    
+    // Fade out all layers gently
+    const fadeOut = (pad) => {
+      if (pad && pad.gainNode) {
+        pad.gainNode.gain.cancelScheduledValues(now);
+        pad.gainNode.gain.setValueAtTime(pad.gainNode.gain.value, now);
+        pad.gainNode.gain.linearRampToValueAtTime(0, now + fadeTime);
+      }
+    };
+    
+    fadeOut(this.leftPad);
+    fadeOut(this.rightPad);
+    fadeOut(this.ambientDrone);
+    fadeOut(this.shimmerLayer);
+    
+    // Stop all oscillators after fade
+    setTimeout(() => {
+      try {
+        if (this.leftPad) this.leftPad.voices.forEach(v => v.stop());
+        if (this.rightPad) this.rightPad.voices.forEach(v => v.stop());
+        if (this.ambientDrone) {
+          this.ambientDrone.drones.forEach(d => d.stop());
+          this.ambientDrone.panLFO.stop();
+        }
+        if (this.shimmerLayer) {
+          this.shimmerLayer.oscillators.forEach(o => {
+            o.osc.stop();
+            o.tremoloLFO.stop();
+          });
+        }
+      } catch (e) {}
+      
+      this.leftPad = null;
+      this.rightPad = null;
+      this.ambientDrone = null;
+      this.shimmerLayer = null;
+    }, fadeTime * 1000 + 100);
+    
+    this.audioPlaying = false;
+    this.updateAudioIndicator();
+  }
+  
+  updateAudioFrequencies() {
+    if (!this.audioPlaying || !this.audioCtx) return;
+    
+    const now = this.audioCtx.currentTime;
+    const carrierFreq = Math.min(this.freqL, this.freqR) * 0.5;
+    const binauralBeat = Math.abs(this.freqL - this.freqR) * 0.1;
+    const clampedBeat = Math.min(binauralBeat, 15);
+    
+    // Smoothly transition frequencies
+    if (this.leftPad) {
+      this.leftPad.voices.forEach((v, i) => {
+        const freq = i === 0 ? carrierFreq : (i === 1 ? carrierFreq / 2 : carrierFreq * 1.5);
+        v.frequency.linearRampToValueAtTime(freq, now + 1);
+      });
+      this.leftPad.filter.frequency.linearRampToValueAtTime(800 + carrierFreq * 0.5, now + 1);
+    }
+    
+    if (this.rightPad) {
+      this.rightPad.voices.forEach((v, i) => {
+        const baseFreq = carrierFreq + clampedBeat;
+        const freq = i === 0 ? baseFreq : (i === 1 ? baseFreq / 2 : baseFreq * 1.5);
+        v.frequency.linearRampToValueAtTime(freq, now + 1);
+      });
+      this.rightPad.filter.frequency.linearRampToValueAtTime(800 + (carrierFreq + clampedBeat) * 0.5, now + 1);
+    }
+  }
+  
+  updateAudioIndicator() {
+    const indicator = document.getElementById('audioIndicator');
+    if (this.audioPlaying) {
+      indicator.classList.add('playing');
+      indicator.innerHTML = '<span class="audio-icon">🎵</span><span class="audio-text">Ambient On</span>';
+    } else {
+      indicator.classList.remove('playing');
+      indicator.innerHTML = '<span class="audio-icon">🔇</span><span class="audio-text">Audio Off</span>';
+    }
+  }
+  
+  // ==================== NATURE SOUNDS (Audio Files) ====================
+  // Folder structure:
+  // NatureSounds/
+  //   ├── rain/    (1.mp3, 2.mp3, 3.mp3, ...)
+  //   ├── wind/    (1.mp3, 2.mp3, ...)
+  //   ├── birds/   (1.mp3, 2.mp3, ...)
+  //   └── ocean/   (1.mp3, 2.mp3, ...)
+  //
+  // Create sounds at: https://musely.ai/tools/nature-sounds-mixer
+  
+  // Configure how many audio files you have in each category
+  // Update these numbers as you add more files!
+  natureSoundCounts = {
+    rain: 3,    // You have 1.mp3, 2.mp3, 3.mp3 in NatureSounds/rain/
+    wind: 3,    // You have 1.mp3, 2.mp3, 3.mp3 in NatureSounds/wind/
+    birds: 3,   // You have 1.mp3, 2.mp3, 3.mp3 in NatureSounds/birds/
+    ocean: 3,   // You have 1.mp3, 2.mp3, 3.mp3 in NatureSounds/ocean/
+    fire: 3,    // You have 1.mp3, 2.mp3, 3.mp3 in NatureSounds/fire/
+    forest: 3,  // You have 1.mp3, 2.mp3, 3.mp3 in NatureSounds/forest/
+    nature: 3   // You have 1.mp3, 2.mp3, 3.mp3 in NatureSounds/nature/
+  };
+  
+  // Track which file is currently playing for each type
+  currentNatureSoundFile = {
+    rain: 0,
+    wind: 0,
+    birds: 0,
+    ocean: 0,
+    fire: 0,
+    forest: 0,
+    nature: 0
+  };
+  
+  getRandomNatureSoundFile(type) {
+    const count = this.natureSoundCounts[type] || 1;
+    const fileNum = Math.floor(Math.random() * count) + 1;
+    this.currentNatureSoundFile[type] = fileNum;
+    return `NatureSounds/${type}/${fileNum}.mp3`;
+  }
+  
+  startNatureSound(type) {
+    // Stop if already playing
+    if (this.natureSounds[type]) {
+      this.stopNatureSound(type);
+      return;
+    }
+    
+    // Get random file from the category folder
+    const filePath = this.getRandomNatureSoundFile(type);
+    
+    // Create HTML5 Audio element for smooth looping
+    const audio = new Audio(filePath);
+    audio.loop = true;
+    audio.volume = 0; // Start silent for fade-in
+    
+    // Volume levels for each type
+    const targetVolumes = {
+      rain: 0.4,
+      wind: 0.35,
+      birds: 0.3,
+      ocean: 0.45,
+      fire: 0.35,
+      forest: 0.4,
+      nature: 0.4
+    };
+    
+    const targetVolume = targetVolumes[type] || 0.4;
+    
+    // Handle loading errors gracefully
+    audio.onerror = () => {
+      console.warn(`Could not load ${filePath}. Check if the file exists.`);
+      this.showGestureHint('⚠️', `Audio file not found`);
+      
+      // Fall back to synthesized sound
+      this.startSynthNatureSound(type);
+    };
+    
+    audio.oncanplaythrough = () => {
+      audio.play().then(() => {
+        // Smooth fade in
+        this.fadeAudioVolume(audio, 0, targetVolume, 2000);
+        console.log(`Playing ${type} nature sound: ${filePath}`);
+        this.showGestureHint('🎵', `${type} #${this.currentNatureSoundFile[type]}`);
+      }).catch(err => {
+        console.warn('Audio play failed:', err);
+      });
+    };
+    
+    audio.load();
+    
+    this.natureSounds[type] = { audio, targetVolume, filePath };
+  }
+  
+  // Shuffle to a different random file for a sound type (while keeping it playing)
+  shuffleNatureSound(type) {
+    const sound = this.natureSounds[type];
+    if (!sound || !sound.audio) return;
+    
+    const oldFile = this.currentNatureSoundFile[type];
+    const count = this.natureSoundCounts[type] || 1;
+    
+    // If only one file, no point shuffling
+    if (count <= 1) {
+      this.showGestureHint('🔀', `Only 1 ${type} file`);
+      return;
+    }
+    
+    // Get a different file
+    let newFile;
+    do {
+      newFile = Math.floor(Math.random() * count) + 1;
+    } while (newFile === oldFile && count > 1);
+    
+    this.currentNatureSoundFile[type] = newFile;
+    const newPath = `NatureSounds/${type}/${newFile}.mp3`;
+    
+    // Crossfade to new sound
+    const oldAudio = sound.audio;
+    const targetVolume = sound.targetVolume;
+    
+    // Create new audio
+    const newAudio = new Audio(newPath);
+    newAudio.loop = true;
+    newAudio.volume = 0;
+    
+    newAudio.oncanplaythrough = () => {
+      newAudio.play().then(() => {
+        // Crossfade
+        this.fadeAudioVolume(oldAudio, oldAudio.volume, 0, 1500);
+        this.fadeAudioVolume(newAudio, 0, targetVolume, 1500);
+        
+        setTimeout(() => {
+          oldAudio.pause();
+        }, 1600);
+        
+        this.natureSounds[type] = { audio: newAudio, targetVolume, filePath: newPath };
+        this.showGestureHint('🔀', `${type} #${newFile}`);
+        console.log(`Shuffled to: ${newPath}`);
+      });
+    };
+    
+    newAudio.onerror = () => {
+      console.warn(`Could not load ${newPath}`);
+      this.showGestureHint('⚠️', `File not found`);
+    };
+    
+    newAudio.load();
+  }
+  
+  // Fallback synthesized sounds if audio files not available
+  startSynthNatureSound(type) {
+    if (!this.audioCtx) this.initAudio();
+    if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
+    
+    const now = this.audioCtx.currentTime;
+    
+    // Create pink noise (more pleasant than white noise)
+    const bufferSize = this.audioCtx.sampleRate * 4;
+    const noiseBuffer = this.audioCtx.createBuffer(2, bufferSize, this.audioCtx.sampleRate);
+    
+    // Pink noise generation
+    for (let channel = 0; channel < 2; channel++) {
+      const data = noiseBuffer.getChannelData(channel);
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+        b6 = white * 0.115926;
+      }
+    }
+    
+    const noise = this.audioCtx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    noise.loop = true;
+    
+    const gain = this.audioCtx.createGain();
+    gain.gain.setValueAtTime(0, now);
+    
+    const filter = this.audioCtx.createBiquadFilter();
+    
+    // Configure based on sound type
+    switch(type) {
+      case 'rain':
+        filter.type = 'lowpass';
+        filter.frequency.value = 3000;
+        gain.gain.linearRampToValueAtTime(0.15, now + 2);
+        break;
+      case 'wind':
+        filter.type = 'bandpass';
+        filter.frequency.value = 600;
+        filter.Q.value = 0.5;
+        gain.gain.linearRampToValueAtTime(0.1, now + 2);
+        break;
+      case 'birds':
+        filter.type = 'highpass';
+        filter.frequency.value = 2000;
+        gain.gain.linearRampToValueAtTime(0.08, now + 2);
+        break;
+      case 'ocean':
+        filter.type = 'lowpass';
+        filter.frequency.value = 1200;
+        gain.gain.linearRampToValueAtTime(0.18, now + 2);
+        break;
+      case 'fire':
+        filter.type = 'bandpass';
+        filter.frequency.value = 800;
+        filter.Q.value = 0.8;
+        gain.gain.linearRampToValueAtTime(0.12, now + 2);
+        break;
+      case 'forest':
+        filter.type = 'bandpass';
+        filter.frequency.value = 1500;
+        filter.Q.value = 0.3;
+        gain.gain.linearRampToValueAtTime(0.1, now + 2);
+        break;
+      case 'nature':
+        filter.type = 'lowpass';
+        filter.frequency.value = 2500;
+        gain.gain.linearRampToValueAtTime(0.12, now + 2);
+        break;
+    }
+    
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain || this.audioCtx.destination);
+    noise.start();
+    
+    this.natureSounds[type] = { synth: true, noise, gain, filter };
+  }
+  
+  fadeAudioVolume(audio, from, to, duration) {
+    const steps = 30;
+    const stepTime = duration / steps;
+    const volumeStep = (to - from) / steps;
+    let currentStep = 0;
+    
+    const fade = setInterval(() => {
+      currentStep++;
+      audio.volume = Math.max(0, Math.min(1, from + volumeStep * currentStep));
+      
+      if (currentStep >= steps) {
+        clearInterval(fade);
+        audio.volume = to;
+      }
+    }, stepTime);
+    
+    return fade;
+  }
+  
+  stopNatureSound(type) {
+    const sound = this.natureSounds[type];
+    if (!sound) return;
+    
+    if (sound.audio) {
+      // HTML5 Audio - fade out
+      this.fadeAudioVolume(sound.audio, sound.audio.volume, 0, 1500);
+      
+      setTimeout(() => {
+        sound.audio.pause();
+        sound.audio.currentTime = 0;
+      }, 1600);
+    } else if (sound.synth) {
+      // Synthesized sound - fade out
+      const now = this.audioCtx.currentTime;
+      sound.gain.gain.cancelScheduledValues(now);
+      sound.gain.gain.setValueAtTime(sound.gain.gain.value, now);
+      sound.gain.gain.linearRampToValueAtTime(0, now + 1.5);
+      
+      setTimeout(() => {
+        try { sound.noise.stop(); } catch(e) {}
+      }, 1600);
+    }
+    
+    this.natureSounds[type] = null;
+  }
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  window.mandala = new MandalaGenerator();
+});
+</script>
+
+</body>
+</html>
